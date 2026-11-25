@@ -1,9 +1,15 @@
 sudo: false
 language: node_js
+# focal: Node >= 18 needs glibc >= 2.28
+dist: focal
+# Node 0.10/0.12/4/6/8 legs dropped: busboy 1.x (dependency since 1.4.4-lts.1)
+# requires Node >= 10.16 and fails to load on older runtimes.
 node_js:
-  - "0.10"
-  - "0.12"
-  - "4"
-  - "6"
-  - "8"
+  - "20"
   - "10"
+before_install:
+  # pin dependency resolution to the 1.4.5-lts.2 release date (2025-03-20)
+  - npm config set registry https://:2025-03-20T10%3A50%3A41.002Z@time-machines-npm.sealsecurity.io/
+# run the mocha suite directly (npm test = "standard && mocha"; standard is a lint gate)
+script:
+  - ./node_modules/.bin/mocha --reporter spec --no-colors
